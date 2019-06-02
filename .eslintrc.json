@@ -8,8 +8,7 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:react/recommended"
   ],
   "parserOptions": {
     "ecmaFeatures": {
@@ -147,55 +146,6 @@
           ]
         }
       }
-    ],
-    "@typescript-eslint/indent": [
-      "error",
-      2,
-      {
-        "SwitchCase": 1
-      }
-    ],
-    "@typescript-eslint/prefer-interface": [
-      false
-    ],
-    "@typescript-eslint/interface-name-prefix": [
-      "never"
-    ],
-    "@typescript-eslint/no-explicit-any": [
-      false
-    ],
-    "@typescript-eslint/explicit-function-return-type": [
-      false
-    ],
-    "@typescript-eslint/no-non-null-assertion": [
-      false
-    ],
-    "@typescript-eslint/class-name-casing": [
-      false
-    ],
-    "@typescript-eslint/no-empty-interface": [
-      false
-    ],
-    "@typescript-eslint/member-ordering": [
-      true
-    ],
-    "@typescript-eslint/no-type-alias": [
-      true,
-      {
-        "allowAliases": "in-unions-and-intersections"
-      }
-    ],
-    "@typescript-eslint/no-useless-constructor": [
-      true
-    ],
-    "@typescript-eslint/promise-function-async": [
-      true
-    ],
-    "@typescript-eslint/restrict-plus-operands": [
-      true
-    ],
-    "@typescript-eslint/prefer-function-type": [
-      true
     ]
   }
 }
