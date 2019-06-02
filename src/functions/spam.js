@@ -2,21 +2,33 @@ const axios = require('axios');
 const Url = require('./url');
 
 const isSpam = async (content, spamLinkDomains, redirectionDepth) => {
-  console.log('redirectionDepth: ', redirectionDepth);
-  const urls = Url.getUrls(content);
-  console.log('urls: ', urls);
 
-  const hosts = urls.map(url => Url.convertToHost(url));
-  console.log('hosts: ', hosts);
-  const spamHosts = spamLinkDomains.map(domain => Url.convertToHost(domain));
-  console.log('spamHosts: ', spamHosts);
-  const isContainSpamHost = checkHostContainSpamHost(hosts, spamHosts);
-  console.log('isContainSpamHost: ', isContainSpamHost);
-  if (isContainSpamHost) {
-    return true;
+  let urls = Url.getUrls(content);
+
+  while (redirectionDepth > 0) {
+    // check host is spam host
+    const hosts = urls.map(url => Url.convertToHost(url));
+    const spamHosts = spamLinkDomains.map(domain => Url.convertToHost(domain));
+    const isContainSpamHost = checkHostContainSpamHost(hosts, spamHosts);
+    if (isContainSpamHost) {
+      return true;
+    }
+
+    // get content of html(or redirection), and make new url list
+    const newContentList = await Promise.all(urls.map(async url => {
+      return getContent(url);
+    }));
+    urls = [];
+    newContentList.map(newContent => {
+      urls = urls.concat(Url.getUrls(newContent));
+    });
+    redirectionDepth -= 1;
   }
+  return false;
+};
 
-  return await Promise.all(urls.map(async url => {
+const getContent = async (url) => {
+  try {
     // cant get redirect chain list even by maxRedirects...
     const resp = await axios.get(url, {
       maxRedirects: 0,
@@ -30,10 +42,13 @@ const isSpam = async (content, spamLinkDomains, redirectionDepth) => {
     }
     // set for redirect
     if (resp.headers && resp.headers.location && resp.headers.location.length > 0) {
-      [body] = resp.headers.location;
+      body = resp.headers.location;
     }
-    return isSpam(body, spamLinkDomains, redirectionDepth - 1);
-  }));
+    return body;
+  } catch (err) {
+    console.log('err: ', err);
+    return '';
+  }
 };
 
 

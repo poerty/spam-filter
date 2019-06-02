@@ -31,8 +31,6 @@ const convertToHost = url => {
 };
 
 const isEqual = (host1, host2) => {
-  console.log('host1: ', host1);
-  console.log('host2: ', host2);
   return URI.equal(host1, host2);
 };
 
