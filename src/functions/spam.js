@@ -17,8 +17,22 @@ const isSpam = async (content, spamLinkDomains, redirectionDepth) => {
   }
 
   return await Promise.all(urls.map(async url => {
-    const body = (await axios.get(url)).data;
-    return isSpam(body, spamLinkDomains, redirectionDepth);
+    // cant get redirect chain list even by maxRedirects...
+    const resp = await axios.get(url, {
+      maxRedirects: 0,
+      validateStatus: status => (status >= 200 && status < 300) || status === 302,
+    });
+
+    let body = '';
+    // set for no redirect
+    if (resp && resp.data) {
+      body = resp.data;
+    }
+    // set for redirect
+    if (resp.headers && resp.headers.location && resp.headers.location.length > 0) {
+      [body] = resp.headers.location;
+    }
+    return isSpam(body, spamLinkDomains, redirectionDepth - 1);
   }));
 };
 
