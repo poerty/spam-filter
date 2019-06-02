@@ -5,10 +5,10 @@ const { isSpam } = require('../functions/spam');
 const expect = chai.expect;
 // const should = chai.should();
 
-const url = 'https://goo.gl/nVLutc';
+const url = 'https://unurl.kr/99a7';
 
 const filekokUrl = 'www.filekok.com';
-// const bitUrl = 'bit.ly';
+const bitUrl = 'bit.ly';
 const tvtvUrl = 'tvtv24.com';
 const fileisUrl = 'fileis.com';
 
@@ -22,13 +22,13 @@ describe('/SpamFiltering : Given', () => {
   });
 
   // redirection ...
-  // it('it should filter bit 1', async () => {
-  //   const content = `spam spam ${url}`;
-  //   const spamLinkDomains = [bitUrl];
-  //   const redirectionDepth = 1;
-  //   const check = await isSpam(content, spamLinkDomains, redirectionDepth);
-  //   expect(check).to.eq(true);
-  // });
+  it('it should filter bit 1', async () => {
+    const content = `spam spam ${url}`;
+    const spamLinkDomains = [bitUrl];
+    const redirectionDepth = 1;
+    const check = await isSpam(content, spamLinkDomains, redirectionDepth);
+    expect(check).to.eq(true);
+  });
 
   it('it should filter tvtv 2', async () => {
     const content = `spam spam ${url}`;

@@ -6,7 +6,7 @@ const isSpam = async (content, spamLinkDomains, redirectionDepth) => {
   let urls = Url.getUrls(content);
 
   // for de-duplicate spec, use while loop instead of recursion
-  while (redirectionDepth > 0) {
+  while (redirectionDepth > -1) {
     // check host is spam host
     const hosts = urls.map(url => Url.convertToHost(url));
     const spamHosts = spamLinkDomains.map(domain => Url.convertToHost(domain));
@@ -34,7 +34,7 @@ const getContent = async (url) => {
     // cant get redirect chain list even by maxRedirects...
     const resp = await axios.get(url, {
       maxRedirects: 0,
-      validateStatus: status => (status >= 200 && status < 300) || status === 302,
+      validateStatus: status => (status >= 200 && status < 300) || status === 302 || status === 301,
     });
 
     let body = '';
@@ -44,7 +44,12 @@ const getContent = async (url) => {
     }
     // set for redirect
     if (resp.headers && resp.headers.location && resp.headers.location.length > 0) {
-      body = resp.headers.location;
+      if (resp.headers.location instanceof Array) {
+        [body] = resp.headers.location;
+      }
+      else {
+        body = resp.headers.location;
+      }
     }
     return body;
   } catch (err) {
