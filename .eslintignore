@@ -1,0 +1,7 @@
+.vscode
+build
+node_modules
+public
+.env*
+.webpack
+*.swp
