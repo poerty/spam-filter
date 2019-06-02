@@ -5,6 +5,7 @@ const isSpam = async (content, spamLinkDomains, redirectionDepth) => {
 
   let urls = Url.getUrls(content);
 
+  // for de-duplicate spec, use while loop instead of recursion
   while (redirectionDepth > 0) {
     // check host is spam host
     const hosts = urls.map(url => Url.convertToHost(url));
@@ -15,6 +16,7 @@ const isSpam = async (content, spamLinkDomains, redirectionDepth) => {
     }
 
     // get content of html(or redirection), and make new url list
+    // for Parallelize, use promise all
     const newContentList = await Promise.all(urls.map(async url => {
       return getContent(url);
     }));
